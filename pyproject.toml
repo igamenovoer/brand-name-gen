@@ -19,7 +19,7 @@ classifiers = [
   "Topic :: Utilities",
   "Operating System :: OS Independent",
 ]
-dependencies = ["tavily-python>=0.7.12,<0.8", "pydantic>=2.11.9,<3", "attrs>=25.3.0,<26", "requests>=2.32.5,<3", "idna>=3.10,<4", "httpx>=0.28.1,<0.29", "cachetools>=6.2.0,<7", "mkdocs-material>=9.6.21,<10"]
+dependencies = ["tavily-python>=0.7.12,<0.8", "pydantic>=2.11.9,<3", "attrs>=25.3.0,<26", "requests>=2.32.5,<3", "idna>=3.10,<4", "httpx>=0.28.1,<0.29", "cachetools>=6.2.0,<7", "mkdocs-material>=9.6.21,<10", "click>=8.3.0,<9"]
 
 [project.urls]
 Homepage = "https://github.com/igamenovoer/brand-name-gen"
@@ -27,7 +27,7 @@ Repository = "https://github.com/igamenovoer/brand-name-gen"
 Issues = "https://github.com/igamenovoer/brand-name-gen/issues"
 
 [project.scripts]
-brand-name-gen = "brand_name_gen.cli:main"
+brand-name-gen-cli = "brand_name_gen.cli:cli"
 
 [build-system]
 build-backend = "hatchling.build"
@@ -47,6 +47,7 @@ pytest-cov = ">=4.1"
 ruff = ">=0.5"
 mypy = ">=1.10"
 types-requests = ">=2.32"
+types-click = ">=7.1"
 build = ">=1.2"
 mkdocs = ">=1.6"
 twine = ">=5.1"

@@ -16,7 +16,7 @@
 - `pixi run quality` – lint + typecheck + tests
 - `pixi run build` – build wheel/sdist (`dist/`)
 - `pixi run docs-serve` – live docs server; `pixi run docs-deploy` to publish
-- CLI quick check: `brand-name-gen eco solar --style modern --limit 5`
+- CLI quick check: `brand-name-gen-cli generate eco solar --style modern --limit 5`
 
 ## Coding Style & Naming Conventions
 - Python 3.11+, 4-space indentation, line length 100
@@ -42,4 +42,3 @@
 - Use the `context/` directory for plans, logs, and decisions; start files with the HEADER block
 - Keep changes minimal and focused; mirror edits in tests and docs where applicable
 - When adding features, expose them via CLI (`project.scripts`) and document in `docs/usage.md`
-

@@ -14,7 +14,11 @@ pip install brand-name-gen
 
 ## Command Line
 ```bash
-brand-name-gen eco solar --style modern --limit 5
+# Generate names
+brand-name-gen-cli generate eco solar --style modern --limit 5
+
+# Check .com availability (and probe www)
+brand-name-gen-cli check-www brand-name --json
 ```
 
 Output:
