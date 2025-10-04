@@ -1,0 +1,20 @@
+site_name: Brand Name Gen
+repo_url: https://github.com/igamenovoer/brand-name-gen
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - API: api.md
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+plugins: []
+docs_dir: docs
+site_dir: site

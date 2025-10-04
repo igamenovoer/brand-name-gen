@@ -1,6 +1,6 @@
 # Brand Name Generator
 
-A tool to generate unique and creative brand names for commercials and marketing campaigns.
+Generate unique, memorable brand names from seed keywords. Includes a simple Python API and a CLI for quick use.
 
 ## Overview
 
@@ -15,24 +15,24 @@ This project aims to create an intelligent brand name generator that can produce
 - **Semantic analysis**: Ensure generated names convey appropriate meanings and emotions
 - **Export functionality**: Export generated names in various formats
 
-## Project Structure
-
-```
-brand-name-gen/
-├── src/                    # Source code
-│   ├── generators/         # Name generation algorithms
-│   ├── analyzers/          # Name analysis and scoring
-│   ├── validators/         # Domain and trademark checking
-│   └── utils/             # Utility functions
-├── data/                  # Training data and word lists
-├── tests/                 # Test files
-├── docs/                  # Documentation
-└── examples/              # Usage examples
-```
-
 ## Getting Started
 
-*Coming soon...*
+Install from PyPI (after first release):
+```
+pip install brand-name-gen
+```
+
+CLI:
+```
+brand-name-gen eco solar --style modern --limit 5
+```
+
+Python API:
+```python
+from brand_name_gen import generate_names
+
+print(generate_names(["eco", "solar"], style="modern", limit=5))
+```
 
 ## Technology Stack
 
@@ -44,4 +44,4 @@ brand-name-gen/
 
 ## License
 
-*To be determined*
+MIT
