@@ -23,6 +23,8 @@ from .domain import DomainAvailability, check_www_resolves, is_com_available
 from .search.dataforseo.google_rank import DataForSEORanker
 from .search.dataforseo.types import GoogleRankQuery
 from .utils.env import load_env_from_dotenv
+from .evaluate.types import UniquenessConfig, LocaleSpec
+from .evaluate.evaluator import UniquenessEvaluator
 
 
 def _load_env_from_dotenv() -> None:
@@ -327,3 +329,56 @@ def check_search_engine_dataforseo(
     click.echo("matches:")
     for m in out["matches"][:10]:
         click.echo(f"  - #{m.get('rank_absolute')}: {m.get('title')} -> {m.get('url')}")
+
+
+@cli.group("evaluate", help="Evaluate brand-related metrics")
+def evaluate_group() -> None:
+    """Parent group for evaluation flows (e.g., uniqueness)."""
+
+
+@evaluate_group.command("uniqueness", help="Compute a 0–100 uniqueness score for a brand/app title")
+@click.argument("title", type=str, required=True)
+@click.option("--country", default="us", show_default=True, help="AppFollow country code (lowercase)")
+@click.option("--hl", default="en", show_default=True, help="Play locale code (e.g., en)")
+@click.option("--gl", default="US", show_default=True, help="Play country code (e.g., US)")
+@click.option("--location-code", default=2840, show_default=True, type=int, help="DataForSEO location_code")
+@click.option("--language-code", default="en", show_default=True, help="DataForSEO language_code")
+@click.option(
+    "--matcher",
+    type=click.Choice(["auto", "rapidfuzz", "builtin"], case_sensitive=False),
+    default="auto",
+    show_default=True,
+    help="Matching engine to use",
+)
+@click.option("--json", "as_json", is_flag=True, default=False, help="Output JSON")
+def evaluate_uniqueness_cmd(
+    title: str,
+    country: str,
+    hl: str,
+    gl: str,
+    location_code: int,
+    language_code: str,
+    matcher: str,
+    as_json: bool,
+) -> None:
+    cfg = UniquenessConfig(matcher_engine=matcher)
+    evaluator = UniquenessEvaluator.from_defaults()
+    evaluator.set_config(cfg)
+    loc = LocaleSpec(country=country, hl=hl, gl=gl, location_code=location_code, language_code=language_code)
+    try:
+        report = evaluator.evaluate(title, [loc])
+    except Exception as e:  # pragma: no cover - network/dep edges
+        raise click.ClickException(str(e))
+
+    if as_json:
+        click.echo(report.model_dump_json())
+        return
+    click.echo(f"overall_score: {report.overall_score}")
+    click.echo(f"grade: {report.grade}")
+    click.echo("components:")
+    for k, v in report.components.items():
+        click.echo(f"  - {k}: {v}")
+    if report.explanations:
+        click.echo("explanations:")
+        for line in report.explanations:
+            click.echo(f"  - {line}")
