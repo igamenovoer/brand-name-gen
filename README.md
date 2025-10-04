@@ -104,6 +104,12 @@ res = ranker.run(GoogleRankQuery(keyword="hb-app"))
 print(res.top_position, [m.title for m in res.matches[:5]])
 ```
 
+Uniqueness evaluation example (Python script):
+```
+pixi run -e dev python examples/evaluate_uniqueness_demo.py
+```
+This script uses Rich to print steps, loads `.env` automatically, reads YAML config if present, and prints a final summary table.
+
 ## Technology Stack
 
 *To be determined based on requirements*
