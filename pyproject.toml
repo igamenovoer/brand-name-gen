@@ -19,7 +19,7 @@ classifiers = [
   "Topic :: Utilities",
   "Operating System :: OS Independent",
 ]
-dependencies = []
+dependencies = ["tavily-python>=0.7.12,<0.8"]
 
 [project.urls]
 Homepage = "https://github.com/igamenovoer/brand-name-gen"
