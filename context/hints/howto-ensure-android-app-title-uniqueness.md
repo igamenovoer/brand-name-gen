@@ -58,6 +58,27 @@ def find_conflicts(title: str, max_results: int = 15) -> dict:
 # print(find_conflicts("BrandName"))
 ```
 
+3b) Validate exact‑match ranking with ASO tools (3rd‑party)
+- Goal: ensure your app ranks first when users search your exact brand keyword (per locale).
+- Use an ASO platform’s keyword ranking feature to check Top‑1 for your brand term:
+  - AppFollow — Keyword Tracking / Live Ranking (shows Top apps for a keyword and flags Top‑1):
+    - https://support.appfollow.io/hc/en-us/articles/360020831817-Keyword-Tracking
+    - https://support.appfollow.io/hc/en-us/articles/360020831697-Keyword-Live-Ranking
+  - App Radar — Keyword Intelligence / Rankings:
+    - https://appradar.com/aso-keyword-rankings-tool
+    - Pricing (free tier available; features vary): https://appradar.com/pricing
+  - MobileAction — ASO Intelligence Keyword Tracking:
+    - https://www.mobileaction.co/aso-tools/
+    - Glossary (keyword tracking): https://www.mobileaction.co/glossary/what-is-keyword-tracking/
+  - AppTweak — Keyword monitoring & ranked keywords:
+    - https://www.apptweak.com/en/aso-tools/app-store-keyword-ranking
+    - Guide (Play keyword research): https://www.apptweak.com/en/aso-blog/play-store-keyword-research
+
+Notes
+- Most ASO suites are paid, but many offer free plans or trials (AppFollow/App Radar/MobileAction often provide limited free keyword tracking). Exact availability changes—check current pricing pages.
+- Rankings are locale/device‑specific and can fluctuate with algorithm updates; verify per `hl`/`gl` target.
+- Tools simulate store search; minor discrepancies vs. live Play UI can occur (A/B tests, personalization).
+
 4) Decision rules (suggested)
 - Unique if: no exact matches and no “very close” titles (normalized or similarity ≥ 0.9) in your category/locales.
 - If collisions exist: prefer a more distinctive core title; or add a short, policy‑compliant descriptor (e.g., “BrandName — Budget Planner”) while staying ≤ 30 chars.
@@ -70,4 +91,4 @@ def find_conflicts(title: str, max_results: int = 15) -> dict:
 ## Notes
 - Title uniqueness is not enforced by Play, but discoverability and legal clarity matter. Pair these checks with trademark clearance in launch markets (USPTO/EUIPO/WIPO).
 - Avoid scraping Play HTML directly; prefer web search (site operator) or APIs like Tavily for resilience.
-
+ - To validate ranking over time, set up keyword tracking in an ASO tool for your exact brand keyword in each target locale; alert on drops from Top‑1.
