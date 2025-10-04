@@ -6,6 +6,7 @@ from typing import Any, Dict
 from click.testing import CliRunner
 
 from brand_name_gen.cli import cli
+import brand_name_gen.cli as cli_mod
 import brand_name_gen.domain_check as dc
 
 
@@ -59,7 +60,8 @@ def test_cli_check_www_taken_with_probe_json(monkeypatch: Any) -> None:
         assert domain == "openai.com"
         return True
 
-    monkeypatch.setattr(dc, "is_com_available", fake_is_com_available)  # type: ignore[arg-type]
+    # Patch the symbol used inside the CLI module
+    monkeypatch.setattr(cli_mod, "is_com_available", fake_is_com_available)  # type: ignore[arg-type]
     monkeypatch.setattr(dc, "check_www_resolves", fake_probe)  # type: ignore[arg-type]
 
     runner = CliRunner()
@@ -69,3 +71,29 @@ def test_cli_check_www_taken_with_probe_json(monkeypatch: Any) -> None:
     assert data["domain"] == "openai.com"
     assert data["available"] is False
     assert data["www_resolves"] is True
+
+
+def test_cli_check_www_human_output_includes_all_fields(monkeypatch: Any) -> None:
+    def fake_is_com_available(brand: str, *, timeout_s: float = 5.0):
+        return dc.DomainAvailability(
+            domain="brand-name.com",
+            available=True,
+            rdap_status=404,
+            authoritative=True,
+            source=dc.Source.rdap_verisign,
+        )
+
+    monkeypatch.setattr(cli_mod, "is_com_available", fake_is_com_available)  # type: ignore[arg-type]
+
+    runner = CliRunner()
+    res = runner.invoke(cli, ["check-www", "brand name"])  # no --json
+    assert res.exit_code == 0
+    out = res.output
+    # Ensure all JSON keys are present in key: value form
+    assert "domain: brand-name.com" in out
+    assert "available: True" in out
+    assert "rdap_status: 404" in out
+    assert "authoritative: True" in out
+    assert "source: rdap:verisign" in out
+    assert "note: None" in out
+    assert "www_resolves: False" in out

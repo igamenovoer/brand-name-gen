@@ -58,19 +58,20 @@ def cmd_check_www(brand: str, provider: str, timeout: float, as_json: bool) -> N
     else:
         www_resolves = None
 
+    payload = result.model_dump(mode="json")
+    payload["www_resolves"] = www_resolves
     if as_json:
-        payload = result.model_dump()
-        payload["www_resolves"] = www_resolves
         click.echo(json.dumps(payload))
         return
-
-    status = (
-        "available" if result.available is True else "taken" if result.available is False else "unknown"
-    )
-    click.echo(f"domain: {result.domain}")
-    click.echo(f"status: {status}")
-    if www_resolves is not None:
-        click.echo(f"www_resolves: {www_resolves}")
+    # Print the same fields as JSON in a human-readable key: value format
+    # Keep stable order
+    click.echo(f"domain: {payload['domain']}")
+    click.echo(f"available: {payload['available']}")
+    click.echo(f"rdap_status: {payload['rdap_status']}")
+    click.echo(f"authoritative: {payload['authoritative']}")
+    click.echo(f"source: {payload['source']}")
+    click.echo(f"note: {payload['note']}")
+    click.echo(f"www_resolves: {payload['www_resolves']}")
 
 
 if __name__ == "__main__":  # pragma: no cover
