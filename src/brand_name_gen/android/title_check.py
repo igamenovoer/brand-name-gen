@@ -19,18 +19,62 @@ from pydantic import BaseModel, Field
 
 
 class Provider(str, Enum):
-    """Supported providers for title checks."""
+    """Supported providers for Android title uniqueness checks.
+
+    Members
+    -------
+    appfollow
+        Use AppFollow ASO suggestions API.
+    playstore
+        Scrape Google Play web search results (heuristic, HTML subject to change).
+    """
 
     appfollow = "appfollow"
     playstore = "playstore"
 
 
 class Suggestion(BaseModel):
+    """Suggestion item returned by a provider.
+
+    Parameters
+    ----------
+    pos : int | None, optional
+        1-based position in the suggestion list when available.
+    term : str
+        Suggested search term or app title text.
+    """
+
     pos: Optional[int] = Field(default=None)
     term: str
 
 
 class TitleCheckResult(BaseModel):
+    """Structured result of a title uniqueness check.
+
+    Parameters
+    ----------
+    provider : Provider
+        Which provider produced the result (``Provider.appfollow`` or ``Provider.playstore``).
+    title : str
+        Input title that was evaluated.
+    country : str | None, optional
+        Country code (lowercase, e.g., ``'us'``) for AppFollow. ``None`` for Play Store.
+    hl : str | None, optional
+        Play Store UI language (e.g., ``'en'``). ``None`` for AppFollow.
+    gl : str | None, optional
+        Play Store country code (e.g., ``'US'``). ``None`` for AppFollow.
+    threshold : float
+        Similarity ratio threshold in ``[0, 1]`` for heuristic matching.
+    suggestions : list[Suggestion]
+        Provider-sourced suggestions or result titles.
+    collisions : list[Suggestion]
+        Subset of suggestions considered too similar or containing/contained by the input.
+    unique_enough : bool
+        ``True`` when no collisions found under the configured threshold.
+    meta : dict
+        Provider-specific metadata (e.g., ``{"play_url": "..."}``).
+    """
+
     provider: Provider
     title: str
     country: Optional[str] = None
@@ -44,16 +88,44 @@ class TitleCheckResult(BaseModel):
 
 
 class TitleCheckError(Exception):
-    """Raised when a provider call fails or input is invalid."""
+    """Raised when a provider request fails or input is invalid."""
 
 
 def normalize_title(s: str) -> str:
+    """Normalize a string for title comparison.
+
+    Lowercases, replaces non-alphanumerics with single spaces, collapses whitespace.
+
+    Parameters
+    ----------
+    s : str
+        Raw title or term.
+
+    Returns
+    -------
+    str
+        Normalized representation suitable for similarity matching.
+    """
     t = s.lower()
     t = re.sub(r"[^a-z0-9]+", " ", t).strip()
     return re.sub(r"\s+", " ", t)
 
 
 def is_similar(a: str, b: str, *, threshold: float = 0.9) -> bool:
+    """Check if two titles are similar under a ratio threshold.
+
+    Parameters
+    ----------
+    a, b : str
+        Titles to compare.
+    threshold : float, default=0.9
+        Ratio threshold in ``[0, 1]``. Higher values require closer matches.
+
+    Returns
+    -------
+    bool
+        ``True`` if similarity ratio is greater than or equal to ``threshold``.
+    """
     return SequenceMatcher(None, normalize_title(a), normalize_title(b)).ratio() >= threshold
 
 
@@ -79,6 +151,41 @@ def check_title_appfollow(
     api_key: Optional[str] = None,
     timeout_s: float = 30.0,
 ) -> TitleCheckResult:
+    """Check title uniqueness using AppFollow ASO suggestions.
+
+    Requires an AppFollow API token (``APPFOLLOW_API_KEY``). Suggestions are compared
+    against the input using substring and similarity heuristics.
+
+    Parameters
+    ----------
+    title : str
+        Title to evaluate.
+    country : str, default='us'
+        Two-letter country code (lowercase) used by AppFollow.
+    threshold : float, default=0.9
+        Similarity threshold in ``[0, 1]`` for collision detection.
+    api_key : str | None, optional
+        Overrides ``APPFOLLOW_API_KEY`` from the environment when provided.
+    timeout_s : float, default=30.0
+        HTTP request timeout in seconds.
+
+    Returns
+    -------
+    TitleCheckResult
+        Structured result containing suggestions and any detected collisions.
+
+    Raises
+    ------
+    TitleCheckError
+        If the API key is missing or the AppFollow request fails.
+
+    Examples
+    --------
+    >>> from brand_name_gen.android.title_check import check_title_appfollow
+    >>> res = check_title_appfollow("BrandName", country="us")
+    >>> res.unique_enough
+    True
+    """
     token = api_key or os.getenv("APPFOLLOW_API_KEY")
     if not token:
         raise TitleCheckError("APPFOLLOW_API_KEY not set")
@@ -125,6 +232,37 @@ def check_title_playstore(
     timeout_s: float = 30.0,
     user_agent: Optional[str] = None,
 ) -> TitleCheckResult:
+    """Heuristically check title uniqueness via Google Play web search.
+
+    Scrapes the Play Store search results page and extracts ``aria-label`` app titles,
+    which are then compared to the input title using substring and similarity rules.
+
+    Parameters
+    ----------
+    title : str
+        Title to evaluate.
+    hl : str, default='en'
+        UI language (e.g., ``'en'``).
+    gl : str, default='US'
+        Country code (e.g., ``'US'``).
+    threshold : float, default=0.9
+        Similarity threshold in ``[0, 1]`` for collision detection.
+    timeout_s : float, default=30.0
+        HTTP request timeout in seconds.
+    user_agent : str | None, optional
+        Custom user agent string for the request.
+
+    Returns
+    -------
+    TitleCheckResult
+        Structured result including suggestions and collisions. ``meta['play_url']`` holds
+        the search URL used.
+
+    Raises
+    ------
+    TitleCheckError
+        If the Play Store page cannot be fetched successfully.
+    """
     q = up.quote(f'"{title}"')
     url = f"https://play.google.com/store/search?q={q}&c=apps&hl={hl}&gl={gl}"
     headers = {
@@ -174,6 +312,32 @@ def check_title(
     api_key: Optional[str] = None,
     timeout_s: float = 30.0,
 ) -> List[TitleCheckResult]:
+    """Run title checks across one or more providers.
+
+    Parameters
+    ----------
+    title : str
+        Title to evaluate.
+    providers : list[Provider] | None, optional
+        Execution order of providers. Defaults to ``[Provider.appfollow, Provider.playstore]``.
+    country : str, default='us'
+        Country code for AppFollow.
+    hl : str, default='en'
+        UI language for Play Store.
+    gl : str, default='US'
+        Country code for Play Store.
+    threshold : float, default=0.9
+        Similarity threshold in ``[0, 1]`` used by both providers.
+    api_key : str | None, optional
+        AppFollow API key override.
+    timeout_s : float, default=30.0
+        HTTP request timeout (applies to both providers).
+
+    Returns
+    -------
+    list[TitleCheckResult]
+        A list of results in the same order as the executed providers.
+    """
     order = providers or [Provider.appfollow, Provider.playstore]
     out: List[TitleCheckResult] = []
     for p in order:
@@ -199,4 +363,3 @@ def check_title(
                 )
             )
     return out
-

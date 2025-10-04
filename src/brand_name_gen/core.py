@@ -47,14 +47,32 @@ def generate_names(
     style: str | None = None,
     limit: int = 20,
 ) -> List[str]:
-    """Generate a list of brand name ideas.
+    """Generate brand name ideas from seed keywords.
+
+    Produces unique, title-cased combinations using built-in prefixes/suffixes and
+    an optional style infix.
 
     Parameters
-    - keywords: iterable of seed words (e.g., ["solar", "green"]).
-    - style: optional style hint among {modern, classic, playful, professional}.
-    - limit: maximum number of names to return.
+    ----------
+    keywords : Iterable[str]
+        Seed words such as ["eco", "solar"]. Empty or non-alphanumeric input is ignored
+        after normalization.
+    style : str, optional
+        Naming style hint. One of ``{"modern", "classic", "playful", "professional"}``.
+        Defaults to ``None`` (no style infix).
+    limit : int, default=20
+        Maximum number of names to return.
 
-    Returns a list of unique, title-cased brand name candidates.
+    Returns
+    -------
+    list[str]
+        List of brand name suggestions (title-cased, unique, order-deterministic).
+
+    Examples
+    --------
+    >>> from brand_name_gen import generate_names
+    >>> generate_names(["eco", "solar"], style="modern", limit=3)
+    ['NeoxEcoLy', 'MetaxEcoLy', 'QuantxEcoLy']
     """
     seeds = [_slugify(k) for k in keywords if k and _slugify(k)]
     if not seeds:
@@ -89,4 +107,3 @@ def generate_names(
                     return results
 
     return results
-

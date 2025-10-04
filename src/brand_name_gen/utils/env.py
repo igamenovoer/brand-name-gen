@@ -12,11 +12,16 @@ from typing import Optional
 
 
 def load_env_from_dotenv() -> None:
-    """Load KEY=VALUE pairs from `.env` in CWD into os.environ (no override).
+    """Load ``KEY=VALUE`` pairs from ``.env`` into ``os.environ``.
 
-    - Ignores blank lines and comments starting with '#'
-    - Strips surrounding single/double quotes from values
-    - Does not overwrite existing environment variables
+    The file is looked up in the current working directory. Existing environment
+    variables are not overridden.
+
+    Notes
+    -----
+    - Ignores blank lines and lines starting with ``#``.
+    - Strips surrounding single or double quotes from values.
+    - Silently returns if ``.env`` does not exist or cannot be parsed.
     """
 
     path = os.path.join(os.getcwd(), ".env")
@@ -38,9 +43,17 @@ def load_env_from_dotenv() -> None:
 
 
 def read_dotenv_value(key: str) -> Optional[str]:
-    """Return value for `key` from `.env` in CWD, without modifying env.
+    """Read a single value from ``.env`` without mutating the environment.
 
-    Returns None if `.env` not present or key not found.
+    Parameters
+    ----------
+    key : str
+        Name of the variable to read.
+
+    Returns
+    -------
+    str | None
+        The value if present, otherwise ``None`` or if ``.env`` is missing.
     """
 
     path = os.path.join(os.getcwd(), ".env")
@@ -58,4 +71,3 @@ def read_dotenv_value(key: str) -> Optional[str]:
     except Exception:  # pragma: no cover - defensive
         return None
     return None
-

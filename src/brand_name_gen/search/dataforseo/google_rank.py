@@ -12,6 +12,12 @@ from difflib import SequenceMatcher
 
 
 class DataForSEORanker:
+    """Service wrapper for DataForSEO Google organic ranking.
+
+    Reads credentials from the environment or a local ``.env`` file and executes the
+    ``google/organic/live/advanced`` endpoint using the configured backend.
+    """
+
     def __init__(self) -> None:
         self.m_backend: Optional[SerpBackend] = None
         self.m_login: Optional[str] = None
@@ -20,6 +26,17 @@ class DataForSEORanker:
 
     @classmethod
     def from_env(cls) -> "DataForSEORanker":
+        """Create an instance with credentials loaded from ``.env``/``os.environ``.
+
+        Environment keys (``.env`` takes precedence):
+        ``DATAFORSEO_LOGIN``/``DATAFORSEO_USERNAME``/``DATAFORSEO_EMAIL`` and
+        ``DATAFORSEO_PASSWORD``/``DATAFORSEO_PASS``.
+
+        Returns
+        -------
+        DataForSEORanker
+            Configured ranker instance with a 30s default timeout.
+        """
         inst = cls()
         login = read_dotenv_value("DATAFORSEO_LOGIN") or read_dotenv_value("DATAFORSEO_USERNAME") or read_dotenv_value("DATAFORSEO_EMAIL")
         password = read_dotenv_value("DATAFORSEO_PASSWORD") or read_dotenv_value("DATAFORSEO_PASS")
@@ -30,16 +47,52 @@ class DataForSEORanker:
         return inst
 
     def set_backend(self, backend: SerpBackend) -> None:
+        """Inject a custom SERP backend implementation.
+
+        Parameters
+        ----------
+        backend : SerpBackend
+            Object implementing the SERP API call (e.g., :class:`RequestsBackend`).
+        """
         self.m_backend = backend
 
     def set_timeout(self, timeout_s: float) -> None:
+        """Set the default HTTP timeout in seconds."""
         self.m_timeout_s = timeout_s
 
     def set_credentials(self, login: str, password: str) -> None:
+        """Set login and password explicitly.
+
+        Parameters
+        ----------
+        login : str
+            DataForSEO login/username/email.
+        password : str
+            DataForSEO password.
+        """
         self.m_login = login
         self.m_password = password
 
     def run(self, query: GoogleRankQuery) -> GoogleRankResult:
+        """Execute a ranking request and compute matches.
+
+        Parameters
+        ----------
+        query : GoogleRankQuery
+            Query parameters including keyword and similarity threshold.
+
+        Returns
+        -------
+        GoogleRankResult
+            Structured result including top position, matches and a ``check_url``.
+
+        Raises
+        ------
+        CredentialsMissingError
+            If credentials are not configured.
+        ApiResponseError
+            If the API response is not successful (may also raise subclass errors).
+        """
         if not self.m_login or not self.m_password:
             raise CredentialsMissingError("DATAFORSEO_LOGIN/PASSWORD not configured")
         backend = self.m_backend or RequestsBackend(
@@ -100,4 +153,3 @@ def _find_matches(keyword: str, organic: List[Dict[str, Any]], *, threshold: flo
             out.append(OrganicItem(rank_absolute=rank_abs, title=title, url=url_val))
     out.sort(key=lambda m: m.rank_absolute if isinstance(m.rank_absolute, int) else 10**9)
     return out
-
