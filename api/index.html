@@ -1,0 +1,1108 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../llm/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+    
+    
+      
+        <title>API - Brand Name Gen</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Brand Name Gen" class="md-header__button md-logo" aria-label="Brand Name Gen" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Brand Name Gen
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/igamenovoer/brand-name-gen" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../usage/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../domain-availability/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Domain Availability
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../llm/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  LLM
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Brand Name Gen" class="md-nav__button md-logo" aria-label="Brand Name Gen" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Brand Name Gen
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/igamenovoer/brand-name-gen" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Usage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain-availability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Domain Availability
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LLM
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gengenerate_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.generate_names
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genandroidtitle_check" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.android.title_check
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.android.title_check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Models
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genandroidtitle_checker" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.android.title_checker
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.android.title_checker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#apptitlechecker" class="md-nav__link">
+    <span class="md-ellipsis">
+      AppTitleChecker
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gendomaindomain_check" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.domain.domain_check
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.domain.domain_check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domainavailability-pydantic-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      DomainAvailability (Pydantic model)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_com_availablebrand-str-timeout_s-float-50-domainavailability" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_com_available(brand: str, *, timeout_s: float = 5.0) -&gt; DomainAvailability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_www_resolvesdomain-str-provider-str-google-timeout_s-float-50-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      check_www_resolves(domain: str, *, provider: str = 'google', timeout_s: float = 5.0) -&gt; bool
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_manylabels-liststr-timeout_s-float-50-dictstr-domainavailability" class="md-nav__link">
+    <span class="md-ellipsis">
+      check_many(labels: list[str], *, timeout_s: float = 5.0) -&gt; dict[str, DomainAvailability]
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gendomaindomain_checker" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.domain.domain_checker
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.domain.domain_checker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domainchecker" class="md-nav__link">
+    <span class="md-ellipsis">
+      DomainChecker
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genevaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.evaluate
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.evaluate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Evaluator
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gensearchdataforseo" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.search.dataforseo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.search.dataforseo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genutilsenv" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.utils.env
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gengenerate_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.generate_names
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genandroidtitle_check" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.android.title_check
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.android.title_check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Models
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genandroidtitle_checker" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.android.title_checker
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.android.title_checker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#apptitlechecker" class="md-nav__link">
+    <span class="md-ellipsis">
+      AppTitleChecker
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gendomaindomain_check" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.domain.domain_check
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.domain.domain_check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domainavailability-pydantic-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      DomainAvailability (Pydantic model)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_com_availablebrand-str-timeout_s-float-50-domainavailability" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_com_available(brand: str, *, timeout_s: float = 5.0) -&gt; DomainAvailability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_www_resolvesdomain-str-provider-str-google-timeout_s-float-50-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      check_www_resolves(domain: str, *, provider: str = 'google', timeout_s: float = 5.0) -&gt; bool
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_manylabels-liststr-timeout_s-float-50-dictstr-domainavailability" class="md-nav__link">
+    <span class="md-ellipsis">
+      check_many(labels: list[str], *, timeout_s: float = 5.0) -&gt; dict[str, DomainAvailability]
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gendomaindomain_checker" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.domain.domain_checker
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.domain.domain_checker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domainchecker" class="md-nav__link">
+    <span class="md-ellipsis">
+      DomainChecker
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genevaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.evaluate
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.evaluate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Evaluator
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_gensearchdataforseo" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.search.dataforseo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="brand_name_gen.search.dataforseo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brand_name_genutilsenv" class="md-nav__link">
+    <span class="md-ellipsis">
+      brand_name_gen.utils.env
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
+<h2 id="brand_name_gengenerate_names">brand_name_gen.generate_names<a class="headerlink" href="#brand_name_gengenerate_names" title="Permanent link">&para;</a></h2>
+<pre><code>generate_names(keywords: Iterable[str], *, style: str | None = None, limit: int = 20) -&gt; list[str]
+</code></pre>
+<p>Generate a list of unique, title-cased brand name ideas.</p>
+<p>Parameters:
+- <code>keywords</code>: seed words like ["eco", "solar"]
+- <code>style</code>: one of modern | classic | playful | professional (optional)
+- <code>limit</code>: maximum number of results to return</p>
+<p>Returns:
+- List of strings (brand name suggestions)</p>
+<hr />
+<h2 id="brand_name_genandroidtitle_check">brand_name_gen.android.title_check<a class="headerlink" href="#brand_name_genandroidtitle_check" title="Permanent link">&para;</a></h2>
+<h3 id="models">Models<a class="headerlink" href="#models" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Suggestion</li>
+<li>Fields: <code>pos: int | None</code>, <code>term: str</code></li>
+<li>TitleCheckResult</li>
+<li>Fields: <code>provider: Literal['appfollow','playstore']</code>, <code>title: str</code>, <code>country: str | None</code>, <code>hl: str | None</code>, <code>gl: str | None</code>, <code>threshold: float</code>, <code>suggestions: list[Suggestion]</code>, <code>collisions: list[Suggestion]</code>, <code>unique_enough: bool</code>, <code>meta: dict</code></li>
+</ul>
+<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h3>
+<pre><code>normalize_title(s: str) -&gt; str
+is_similar(a: str, b: str, *, threshold: float = 0.9) -&gt; bool
+
+check_title_appfollow(
+  title: str,
+  *, country: str = 'us', threshold: float = 0.9,
+  api_key: str | None = None, timeout_s: float = 30.0
+) -&gt; TitleCheckResult
+
+check_title_playstore(
+  title: str,
+  *, hl: str = 'en', gl: str = 'US', threshold: float = 0.9,
+  timeout_s: float = 30.0, user_agent: str | None = None
+) -&gt; TitleCheckResult
+
+check_title(
+  title: str,
+  *, providers: list[Provider] | None = None,
+  country: str = 'us', hl: str = 'en', gl: str = 'US',
+  threshold: float = 0.9, api_key: str | None = None,
+  timeout_s: float = 30.0
+) -&gt; list[TitleCheckResult]
+</code></pre>
+<p>Example</p>
+<pre><code class="language-python">from brand_name_gen.android.title_check import check_title_appfollow, check_title_playstore
+
+af = check_title_appfollow(&quot;BrandName&quot;, country=&quot;us&quot;)
+ps = check_title_playstore(&quot;BrandName&quot;, hl=&quot;en&quot;, gl=&quot;US&quot;)
+print(af.unique_enough, ps.unique_enough)
+</code></pre>
+<hr />
+<h2 id="brand_name_genandroidtitle_checker">brand_name_gen.android.title_checker<a class="headerlink" href="#brand_name_genandroidtitle_checker" title="Permanent link">&para;</a></h2>
+<h3 id="apptitlechecker">AppTitleChecker<a class="headerlink" href="#apptitlechecker" title="Permanent link">&para;</a></h3>
+<p>Stateful service wrapper.</p>
+<pre><code>from brand_name_gen.android.title_checker import AppTitleChecker
+
+checker = AppTitleChecker.from_defaults()
+checker.set_appfollow_api_key(&quot;&lt;token&gt;&quot;)
+af = checker.check_appfollow(&quot;BrandName&quot;, country=&quot;us&quot;)
+ps = checker.check_playstore(&quot;BrandName&quot;, hl=&quot;en&quot;, gl=&quot;US&quot;)
+</code></pre>
+<hr />
+<h2 id="brand_name_gendomaindomain_check">brand_name_gen.domain.domain_check<a class="headerlink" href="#brand_name_gendomaindomain_check" title="Permanent link">&para;</a></h2>
+<h3 id="domainavailability-pydantic-model">DomainAvailability (Pydantic model)<a class="headerlink" href="#domainavailability-pydantic-model" title="Permanent link">&para;</a></h3>
+<p>Fields: <code>domain: str</code>, <code>available: bool | None</code>, <code>rdap_status: int | None</code>, <code>authoritative: bool</code>, <code>source: str</code>, <code>note: str | None</code>.</p>
+<h3 id="is_com_availablebrand-str-timeout_s-float-50-domainavailability">is_com_available(brand: str, *, timeout_s: float = 5.0) -&gt; DomainAvailability<a class="headerlink" href="#is_com_availablebrand-str-timeout_s-float-50-domainavailability" title="Permanent link">&para;</a></h3>
+<p>Normalize <code>brand</code> and query Verisign RDAP. 404 =&gt; available; 200 =&gt; registered.</p>
+<h3 id="check_www_resolvesdomain-str-provider-str-google-timeout_s-float-50-bool">check_www_resolves(domain: str, *, provider: str = 'google', timeout_s: float = 5.0) -&gt; bool<a class="headerlink" href="#check_www_resolvesdomain-str-provider-str-google-timeout_s-float-50-bool" title="Permanent link">&para;</a></h3>
+<p>DNS-over-HTTPS probe for <code>www.&lt;domain&gt;</code> A record. Diagnostic only.</p>
+<h3 id="check_manylabels-liststr-timeout_s-float-50-dictstr-domainavailability">check_many(labels: list[str], *, timeout_s: float = 5.0) -&gt; dict[str, DomainAvailability]<a class="headerlink" href="#check_manylabels-liststr-timeout_s-float-50-dictstr-domainavailability" title="Permanent link">&para;</a></h3>
+<p>Batch helper to check multiple labels serially.</p>
+<p>Example</p>
+<pre><code class="language-python">from brand_name_gen.domain.domain_check import is_com_available
+
+res = is_com_available(&quot;brand-name&quot;)
+print(res.available)
+</code></pre>
+<hr />
+<h2 id="brand_name_gendomaindomain_checker">brand_name_gen.domain.domain_checker<a class="headerlink" href="#brand_name_gendomaindomain_checker" title="Permanent link">&para;</a></h2>
+<h3 id="domainchecker">DomainChecker<a class="headerlink" href="#domainchecker" title="Permanent link">&para;</a></h3>
+<p>Stateful service with factory methods:
+- <code>from_defaults()</code>
+- <code>from_session(session, *, timeout_s=5.0, rdap_base=None)</code></p>
+<p>Method:
+- <code>check_com(brand: str) -&gt; DomainAvailability</code></p>
+<p>Example</p>
+<pre><code class="language-python">from brand_name_gen.domain.domain_checker import DomainChecker
+
+checker = DomainChecker.from_defaults()
+result = checker.check_com(&quot;brand-name&quot;)
+</code></pre>
+<hr />
+<h2 id="brand_name_genevaluate">brand_name_gen.evaluate<a class="headerlink" href="#brand_name_genevaluate" title="Permanent link">&para;</a></h2>
+<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<pre><code>from brand_name_gen.evaluate.types import (
+  LocaleSpec, UniquenessConfig, MatchStats,
+  ComponentScore, LocaleReport, UniquenessReport,
+)
+</code></pre>
+<h3 id="evaluator">Evaluator<a class="headerlink" href="#evaluator" title="Permanent link">&para;</a></h3>
+<pre><code>from brand_name_gen.evaluate.evaluator import UniquenessEvaluator
+from brand_name_gen.evaluate.types import LocaleSpec
+
+ev = UniquenessEvaluator.from_defaults()  # loads YAML config if present
+report = ev.evaluate(&quot;Your Brand&quot;, [LocaleSpec()])
+print(report.overall_score, report.grade)
+</code></pre>
+<p>Notes
+- Config precedence: brand-name-gen-config.yaml in CWD &gt; env <code>BRAND_NAME_GEN_CONFIG</code> &gt; defaults.
+- If a provider fails (network/auth), the evaluator assigns a neutral component score and appends a warning to <code>report.explanations</code> instead of failing.</p>
+<hr />
+<h2 id="brand_name_gensearchdataforseo">brand_name_gen.search.dataforseo<a class="headerlink" href="#brand_name_gensearchdataforseo" title="Permanent link">&para;</a></h2>
+<h3 id="types_1">Types<a class="headerlink" href="#types_1" title="Permanent link">&para;</a></h3>
+<pre><code>from brand_name_gen.search.dataforseo.types import (
+  GoogleRankQuery, GoogleRankResult, OrganicItem,
+  DataForSEOError, CredentialsMissingError, UnauthorizedError, ForbiddenError, ApiResponseError,
+)
+</code></pre>
+<ul>
+<li>GoogleRankQuery</li>
+<li>Fields: <code>keyword: str</code>, <code>se_domain: str = 'google.com'</code>, <code>location_code: int = 2840</code>, <code>language_code: str = 'en'</code>, <code>device: str = 'desktop'</code>, <code>os: str = 'macos'</code>, <code>depth: int = 50</code>, <code>similarity_threshold: float = 0.9</code></li>
+<li>GoogleRankResult</li>
+<li>Fields: <code>query: GoogleRankQuery</code>, <code>top_position: int | None</code>, <code>matches: list[OrganicItem]</code>, <code>total_matches: int</code>, <code>check_url: str | None</code></li>
+</ul>
+<h3 id="service">Service<a class="headerlink" href="#service" title="Permanent link">&para;</a></h3>
+<pre><code>from brand_name_gen.search.dataforseo.google_rank import DataForSEORanker
+
+ranker = DataForSEORanker.from_env()  # .env takes precedence over os.environ
+res = ranker.run(GoogleRankQuery(keyword=&quot;hb-app&quot;))
+print(res.top_position, [m.title for m in res.matches[:3]])
+</code></pre>
+<p>Errors
+- <code>CredentialsMissingError</code> when creds are not found
+- <code>UnauthorizedError</code> for 401
+- <code>ForbiddenError</code> for 403</p>
+<p>Notes
+- Credentials: <code>DATAFORSEO_LOGIN</code>, <code>DATAFORSEO_PASSWORD</code> (prefer <code>.env</code> in CWD)
+- Consumes DataForSEO credits</p>
+<hr />
+<h2 id="brand_name_genutilsenv">brand_name_gen.utils.env<a class="headerlink" href="#brand_name_genutilsenv" title="Permanent link">&para;</a></h2>
+<pre><code>from brand_name_gen.utils.env import load_env_from_dotenv, read_dotenv_value
+
+load_env_from_dotenv()               # loads KEY=VALUE from .env into os.environ (no override)
+token = read_dotenv_value(&quot;MY_KEY&quot;)  # read .env value without mutating env
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
