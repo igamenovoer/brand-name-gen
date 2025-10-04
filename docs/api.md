@@ -1,12 +1,5 @@
 # API Reference
 
-## HEADER
-- **Purpose**: Document the public Python API
-- **Status**: Active
-- **Date**: 2025-10-04
-- **Dependencies**: None
-- **Target**: Developers
-
 ## brand_name_gen.generate_names
 ```
 generate_names(keywords: Iterable[str], *, style: str | None = None, limit: int = 20) -> list[str]
@@ -21,6 +14,67 @@ Parameters:
 
 Returns:
 - List of strings (brand name suggestions)
+
+---
+
+## brand_name_gen.title_check
+
+### Models
+- Suggestion
+  - Fields: `pos: int | None`, `term: str`
+- TitleCheckResult
+  - Fields: `provider: Literal['appfollow','playstore']`, `title: str`, `country: str | None`, `hl: str | None`, `gl: str | None`, `threshold: float`, `suggestions: list[Suggestion]`, `collisions: list[Suggestion]`, `unique_enough: bool`, `meta: dict`
+
+### Functions
+```
+normalize_title(s: str) -> str
+is_similar(a: str, b: str, *, threshold: float = 0.9) -> bool
+
+check_title_appfollow(
+  title: str,
+  *, country: str = 'us', threshold: float = 0.9,
+  api_key: str | None = None, timeout_s: float = 30.0
+) -> TitleCheckResult
+
+check_title_playstore(
+  title: str,
+  *, hl: str = 'en', gl: str = 'US', threshold: float = 0.9,
+  timeout_s: float = 30.0, user_agent: str | None = None
+) -> TitleCheckResult
+
+check_title(
+  title: str,
+  *, providers: list[Provider] | None = None,
+  country: str = 'us', hl: str = 'en', gl: str = 'US',
+  threshold: float = 0.9, api_key: str | None = None,
+  timeout_s: float = 30.0
+) -> list[TitleCheckResult]
+```
+
+Example
+```python
+from brand_name_gen.title_check import check_title_appfollow, check_title_playstore
+
+af = check_title_appfollow("BrandName", country="us")
+ps = check_title_playstore("BrandName", hl="en", gl="US")
+print(af.unique_enough, ps.unique_enough)
+```
+
+---
+
+## brand_name_gen.title_checker
+
+### AppTitleChecker
+Stateful service wrapper.
+
+```
+from brand_name_gen.title_checker import AppTitleChecker
+
+checker = AppTitleChecker.from_defaults()
+checker.set_appfollow_api_key("<token>")
+af = checker.check_appfollow("BrandName", country="us")
+ps = checker.check_playstore("BrandName", hl="en", gl="US")
+```
 
 ---
 

@@ -22,9 +22,19 @@ Install from PyPI (after first release):
 pip install brand-name-gen
 ```
 
-CLI:
+CLI (pixi or system shell):
 ```
-brand-name-gen eco solar --style modern --limit 5
+# Generate names
+brand-name-gen-cli generate eco solar --style modern --limit 5
+
+# Check .com availability (RDAP) and probe www
+brand-name-gen-cli check-www brand-name --json
+
+# Android title checks (ASO)
+# AppFollow (requires APPFOLLOW_API_KEY; .env auto-loaded)
+brand-name-gen-cli check-android appfollow "Your Brand" --country us --json
+# Google Play web search (heuristic)
+brand-name-gen-cli check-android playstore "Your Brand" --hl en --gl US --json
 ```
 
 Python API:
@@ -33,6 +43,29 @@ from brand_name_gen import generate_names
 
 print(generate_names(["eco", "solar"], style="modern", limit=5))
 ```
+
+Domain availability (.com) via RDAP:
+```python
+from brand_name_gen.domain_check import is_com_available
+
+res = is_com_available("brand-name")
+print(res.domain, res.available)  # brand-name.com True/False/None
+```
+
+Android title checks:
+```python
+from brand_name_gen.title_check import check_title_appfollow, check_title_playstore
+
+# AppFollow (set APPFOLLOW_API_KEY in environment or .env)
+af = check_title_appfollow("Your Brand", country="us")
+print(af.unique_enough, [c.term for c in af.collisions])
+
+# Google Play web search (heuristic)
+ps = check_title_playstore("Your Brand", hl="en", gl="US")
+print(ps.unique_enough, [c.term for c in ps.collisions])
+```
+
+Tip: create a .env with `APPFOLLOW_API_KEY=...` in the project root; the CLI auto-loads it.
 
 ## Technology Stack
 

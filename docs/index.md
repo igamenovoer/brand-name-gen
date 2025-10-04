@@ -1,12 +1,5 @@
 # Brand Name Generator
 
-## HEADER
-- **Purpose**: Documentation site home for the Brand Name Generator package
-- **Status**: Active
-- **Date**: 2025-10-04
-- **Dependencies**: Python 3.11+, MkDocs
-- **Target**: Users and developers
-
 ## Overview
 Generate unique, memorable brand name ideas from seed keywords using a simple, configurable CLI and Python API.
 
@@ -20,10 +13,13 @@ pixi run test
 pip install brand-name-gen
 
 # CLI usage
-brand-name-gen eco green --style modern --limit 5
+brand-name-gen-cli generate eco green --style modern --limit 5
+
+# Android title checks
+brand-name-gen-cli check-android appfollow "Your Brand" --country us --json
+brand-name-gen-cli check-android playstore "Your Brand" --hl en --gl US --json
 ```
 
 ## Links
 - Source: https://github.com/igamenovoer/brand-name-gen
 - PyPI: https://pypi.org/project/brand-name-gen/ (after first release)
-

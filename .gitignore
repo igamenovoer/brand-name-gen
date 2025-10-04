@@ -23,4 +23,4 @@ site/
 
 # Project
 tmp/
-
+.env
