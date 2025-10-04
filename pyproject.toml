@@ -19,7 +19,7 @@ classifiers = [
   "Topic :: Utilities",
   "Operating System :: OS Independent",
 ]
-dependencies = ["tavily-python>=0.7.12,<0.8", "pydantic>=2.11.9,<3", "attrs>=25.3.0,<26", "requests>=2.32.5,<3", "idna>=3.10,<4", "httpx>=0.28.1,<0.29", "cachetools>=6.2.0,<7"]
+dependencies = ["tavily-python>=0.7.12,<0.8", "pydantic>=2.11.9,<3", "attrs>=25.3.0,<26", "requests>=2.32.5,<3", "idna>=3.10,<4", "httpx>=0.28.1,<0.29", "cachetools>=6.2.0,<7", "mkdocs-material>=9.6.21,<10"]
 
 [project.urls]
 Homepage = "https://github.com/igamenovoer/brand-name-gen"
@@ -49,7 +49,6 @@ mypy = ">=1.10"
 types-requests = ">=2.32"
 build = ">=1.2"
 mkdocs = ">=1.6"
-mkdocs-material = ">=9.5"
 twine = ">=5.1"
 
 [tool.pixi.tasks]

@@ -37,3 +37,10 @@ names = generate_names(["eco", "solar"], style="modern", limit=5)
 print(names)
 ```
 
+### Check .com Domain Availability
+```python
+from brand_name_gen.domain_check import is_com_available
+
+res = is_com_available("brand-name")
+print(res.domain, res.available)  # brand-name.com True/False/None
+```

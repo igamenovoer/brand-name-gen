@@ -9,6 +9,8 @@ theme:
 nav:
   - Home: index.md
   - Usage: usage.md
+  - Domain Availability: domain-availability.md
+  - LLM: llm.md
   - API: api.md
 markdown_extensions:
   - admonition
