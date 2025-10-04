@@ -19,6 +19,12 @@ brand-name-gen-cli check-android appfollow "Your Brand" --country us --json
 
 # 2) Google Play web search (heuristic)
 brand-name-gen-cli check-android playstore "Your Brand" --hl en --gl US --json
+
+# Search engine ranking (DataForSEO)
+# Requires DATAFORSEO_LOGIN and DATAFORSEO_PASSWORD (prefer .env in CWD)
+brand-name-gen-cli check-search-engine dataforseo "Your Brand" \
+  --se-domain google.com --location-code 2840 --language-code en \
+  --device desktop --os macos --depth 50 --json
 ```
 
 Output:
@@ -43,7 +49,7 @@ print(names)
 
 ### Check .com Domain Availability
 ```python
-from brand_name_gen.domain_check import is_com_available
+from brand_name_gen.domain.domain_check import is_com_available
 
 res = is_com_available("brand-name")
 print(res.domain, res.available)  # brand-name.com True/False/None
@@ -56,9 +62,34 @@ APPFOLLOW_API_KEY=your_appfollow_api_token
 ```
 The CLI automatically loads `.env` on start (does not override existing environment variables).
 
+### .env for DataForSEO (precedence for CLI command)
+Create a `.env` in your project root with:
+```
+DATAFORSEO_LOGIN=your_login
+DATAFORSEO_PASSWORD=your_password
+```
+The `check-search-engine dataforseo` command prefers `.env` values over OS environment
+variables and will fall back to `os.environ` only if keys are absent in `.env`.
+
+### Python API: DataForSEO SDK
+```python
+from brand_name_gen.search.dataforseo.types import GoogleRankQuery
+from brand_name_gen.search.dataforseo.google_rank import DataForSEORanker
+
+ranker = DataForSEORanker.from_env()
+result = ranker.run(GoogleRankQuery(keyword="hb-app"))
+print(result.top_position, len(result.matches))
+```
+
+### Module Map (refactor)
+- `brand_name_gen/android/*`: Android title checks (AppFollow/Play)
+- `brand_name_gen/domain/*`: Domain availability (.com via RDAP)
+- `brand_name_gen/search/dataforseo/*`: Google ranking SDK (DataForSEO)
+- `brand_name_gen/utils/*`: Shared utilities (e.g., .env helpers)
+
 ### Android Title Checks via Python API
 ```python
-from brand_name_gen.title_check import check_title_appfollow, check_title_playstore
+from brand_name_gen.android.title_check import check_title_appfollow, check_title_playstore
 
 # AppFollow (requires APPFOLLOW_API_KEY in env)
 af = check_title_appfollow("Your Brand", country="us")

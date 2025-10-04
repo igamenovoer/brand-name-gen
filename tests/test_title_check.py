@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List
 
-import brand_name_gen.title_check as tc
+import brand_name_gen.android.title_check as tc
 
 
 class _Resp:
@@ -100,4 +100,3 @@ def test_check_title_aggregate(monkeypatch: Any) -> None:
     out = tc.check_title("BrandName")
     assert len(out) == 2
     assert {r.provider for r in out} == {tc.Provider.appfollow, tc.Provider.playstore}
-

@@ -35,6 +35,10 @@ brand-name-gen-cli check-www brand-name --json
 brand-name-gen-cli check-android appfollow "Your Brand" --country us --json
 # Google Play web search (heuristic)
 brand-name-gen-cli check-android playstore "Your Brand" --hl en --gl US --json
+
+# Search engine ranking (DataForSEO)
+# Requires DATAFORSEO_LOGIN and DATAFORSEO_PASSWORD (prefer .env in project root)
+brand-name-gen-cli check-search-engine dataforseo "Your Brand" --se-domain google.com --location-code 2840 --language-code en --device desktop --os macos --depth 50 --json
 ```
 
 Python API:
@@ -46,7 +50,7 @@ print(generate_names(["eco", "solar"], style="modern", limit=5))
 
 Domain availability (.com) via RDAP:
 ```python
-from brand_name_gen.domain_check import is_com_available
+from brand_name_gen.domain.domain_check import is_com_available
 
 res = is_com_available("brand-name")
 print(res.domain, res.available)  # brand-name.com True/False/None
@@ -54,7 +58,7 @@ print(res.domain, res.available)  # brand-name.com True/False/None
 
 Android title checks:
 ```python
-from brand_name_gen.title_check import check_title_appfollow, check_title_playstore
+from brand_name_gen.android.title_check import check_title_appfollow, check_title_playstore
 
 # AppFollow (set APPFOLLOW_API_KEY in environment or .env)
 af = check_title_appfollow("Your Brand", country="us")
@@ -66,6 +70,23 @@ print(ps.unique_enough, [c.term for c in ps.collisions])
 ```
 
 Tip: create a .env with `APPFOLLOW_API_KEY=...` in the project root; the CLI auto-loads it.
+
+For DataForSEO, also add:
+```
+DATAFORSEO_LOGIN=your_login
+DATAFORSEO_PASSWORD=your_password
+```
+The CLI prefers values from `.env` and falls back to `os.environ`.
+
+Python SDK (DataForSEO):
+```python
+from brand_name_gen.search.dataforseo.types import GoogleRankQuery
+from brand_name_gen.search.dataforseo.google_rank import DataForSEORanker
+
+ranker = DataForSEORanker.from_env()
+res = ranker.run(GoogleRankQuery(keyword="hb-app"))
+print(res.top_position, [m.title for m in res.matches[:5]])
+```
 
 ## Technology Stack
 

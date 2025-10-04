@@ -1,7 +1,8 @@
 """
 Click-based CLI for Brand Name Gen.
 
-Provides subcommands for generating names and checking `.com` availability.
+Provides subcommands for generating names, checking `.com` availability,
+Android title checks (AppFollow/Play), and search engine ranking via DataForSEO.
 """
 
 from __future__ import annotations
@@ -14,36 +15,19 @@ from typing import Any, Dict, List, Tuple
 
 import click
 import requests
+from requests.auth import HTTPBasicAuth
 import urllib.parse as up
 
 from .core import generate_names
-from .domain_check import DomainAvailability, check_www_resolves, is_com_available
+from .domain import DomainAvailability, check_www_resolves, is_com_available
+from .search.dataforseo.google_rank import DataForSEORanker
+from .search.dataforseo.types import GoogleRankQuery
+from .utils.env import load_env_from_dotenv
 
 
 def _load_env_from_dotenv() -> None:
-    """Load simple KEY=VALUE pairs from .env in CWD if present.
-
-    Does not override existing environment variables.
-    Supports basic lines like KEY=value, ignoring blanks and lines starting with '#'.
-    Strips surrounding single/double quotes from values.
-    """
-    path = os.path.join(os.getcwd(), ".env")
-    if not os.path.isfile(path):
-        return
-    try:
-        with open(path, "r", encoding="utf-8") as fh:
-            for raw in fh:
-                line = raw.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                k, v = line.split("=", 1)
-                key = k.strip()
-                val = v.strip().strip('"').strip("'")
-                if key and key not in os.environ:
-                    os.environ[key] = val
-    except Exception:  # pragma: no cover - defensive
-        # Silently ignore malformed .env
-        return
+    """Compatibility wrapper to load .env. Use utils.env in new code."""
+    load_env_from_dotenv()
 
 
 @click.group(help="Brand Name Gen CLI")
@@ -261,3 +245,85 @@ def check_android_playstore(title: str, hl: str, gl: str, threshold: float, as_j
     click.echo("collisions:")
     for c in payload["collisions"]:
         click.echo(f"  - pos={c.get('pos')} term={c.get('term')}")
+
+
+@cli.group("check-search-engine", help="Check search engine rankings (providers: dataforseo)")
+def check_search_engine() -> None:
+    """Parent group for search engine ranking checks."""
+
+
+@check_search_engine.command(
+    "dataforseo", help="Use DataForSEO Google Organic Live Advanced to check title ranking"
+)
+@click.argument("keyword", type=str, required=True)
+@click.option("--se-domain", default="google.com", show_default=True, help="Google domain")
+@click.option("--location-code", type=int, default=2840, show_default=True, help="Location code")
+@click.option("--language-code", default="en", show_default=True, help="Language code")
+@click.option("--device", default="desktop", show_default=True, help="Device (desktop/mobile)")
+@click.option("--os", "os_name", default="macos", show_default=True, help="OS (macos/windows/android/ios)")
+@click.option("--depth", type=int, default=50, show_default=True, help="SERP depth to collect")
+@click.option("--threshold", type=float, default=0.9, show_default=True, help="Similarity threshold (0-1)")
+@click.option("--timeout", type=float, default=30.0, show_default=True, help="HTTP timeout (s)")
+@click.option("--json", "as_json", is_flag=True, default=False, help="Output JSON")
+def check_search_engine_dataforseo(
+    keyword: str,
+    se_domain: str,
+    location_code: int,
+    language_code: str,
+    device: str,
+    os_name: str,
+    depth: int,
+    threshold: float,
+    timeout: float,
+    as_json: bool,
+) -> None:
+    """Check Google ranking for a keyword using DataForSEO SDK.
+
+    Credentials are resolved with precedence: .env in CWD, then OS environment.
+    Required keys: DATAFORSEO_LOGIN and DATAFORSEO_PASSWORD (or compatible aliases).
+    """
+    query = GoogleRankQuery(
+        keyword=keyword,
+        se_domain=se_domain,
+        location_code=int(location_code),
+        language_code=language_code,
+        device=device,
+        os=os_name,
+        depth=int(depth),
+        similarity_threshold=float(threshold),
+    )
+    ranker = DataForSEORanker.from_env()
+    try:
+        res = ranker.run(query)
+    except Exception as e:  # pragma: no cover - error mapping surfaced as message
+        raise click.ClickException(str(e))
+
+    out: Dict[str, Any] = {
+        "keyword": res.query.keyword,
+        "se_domain": res.query.se_domain,
+        "location_code": res.query.location_code,
+        "language_code": res.query.language_code,
+        "device": res.query.device,
+        "os": res.query.os,
+        "depth": res.query.depth,
+        "top_position": res.top_position,
+        "total_matches": res.total_matches,
+        "matches": [m.model_dump(mode="json") for m in res.matches],
+        "check_url": res.check_url,
+    }
+    if as_json:
+        click.echo(json.dumps(out, ensure_ascii=False))
+        return
+    click.echo(f"keyword: {out['keyword']}")
+    click.echo(
+        f"engine: {out['se_domain']} location_code={out['location_code']} language_code={out['language_code']}"
+    )
+    click.echo(f"device/os: {out['device']}/{out['os']}")
+    click.echo(f"depth: {out['depth']}")
+    click.echo(f"top_position: {out['top_position']}")
+    click.echo(f"total_matches: {out['total_matches']}")
+    if out.get("check_url"):
+        click.echo(f"verify: {out['check_url']}")
+    click.echo("matches:")
+    for m in out["matches"][:10]:
+        click.echo(f"  - #{m.get('rank_absolute')}: {m.get('title')} -> {m.get('url')}")

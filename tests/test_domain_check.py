@@ -4,8 +4,8 @@ from typing import Any, Dict
 
 import types
 
-import brand_name_gen.domain_check as dc
-from brand_name_gen.domain_checker import DomainChecker
+import brand_name_gen.domain.domain_check as dc
+from brand_name_gen.domain.domain_checker import DomainChecker
 
 
 class _Resp:
@@ -70,4 +70,3 @@ def test_domain_checker_from_defaults(monkeypatch: Any) -> None:
     res = checker.check_com("Brand Name")
     assert res.domain.endswith("brand-name.com")
     assert res.available is True
-

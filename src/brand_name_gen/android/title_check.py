@@ -1,35 +1,8 @@
 """
 Android app title uniqueness checks (AppFollow + Play Store).
 
-This module provides typed utilities and provider-specific functions to
-assess whether an Android app title is "unique enough" using:
-
-- AppFollow ASO suggestions API (authoritative suggestions endpoint)
-- Google Play web search (heuristic HTML scan)
-
-Data models use Pydantic, and code follows the project's Python coding guide.
-
-Classes
--------
-Provider
-    Enumeration for supported providers
-Suggestion
-    A suggested term with an optional position
-TitleCheckResult
-    Result of a provider check with suggestions, collisions, and meta info
-
-Functions
----------
-normalize_title
-    Normalize free-form titles for comparison
-is_similar
-    String similarity via SequenceMatcher on normalized text
-check_title_appfollow
-    Call AppFollow ASO suggests and compute collisions
-check_title_playstore
-    Fetch Google Play search page and compute collisions (heuristic)
-check_title
-    Convenience aggregator calling multiple providers
+Moved from `brand_name_gen.title_check` into `brand_name_gen.android.title_check`.
+Public API remains the same via shim re-exports for backward compatibility.
 """
 
 from __future__ import annotations
@@ -53,47 +26,11 @@ class Provider(str, Enum):
 
 
 class Suggestion(BaseModel):
-    """A suggested search term.
-
-    Parameters
-    ----------
-    pos : int or None
-        Optional position (1-based) in the suggestion list
-    term : str
-        Suggested term text
-    """
-
     pos: Optional[int] = Field(default=None)
     term: str
 
 
 class TitleCheckResult(BaseModel):
-    """Result of a title uniqueness check for a specific provider.
-
-    Parameters
-    ----------
-    provider : Provider
-        The provider used (appfollow or playstore)
-    title : str
-        The input title that was checked
-    country : str or None
-        Country code for AppFollow (lowercase two-letter) if relevant
-    hl : str or None
-        Play locale code (e.g., 'en')
-    gl : str or None
-        Play country code (e.g., 'US')
-    threshold : float
-        Similarity threshold used for collisions
-    suggestions : list of Suggestion
-        Provider-returned or derived suggestion terms
-    collisions : list of Suggestion
-        Subset of suggestions considered near-collisions
-    unique_enough : bool
-        True if there are no collisions
-    meta : dict
-        Provider-specific metadata (e.g., {'play_url': '...'})
-    """
-
     provider: Provider
     title: str
     country: Optional[str] = None
@@ -111,50 +48,16 @@ class TitleCheckError(Exception):
 
 
 def normalize_title(s: str) -> str:
-    """Normalize a title string for comparison.
-
-    Lowercase, replace non-alphanumeric with spaces, collapse whitespace,
-    and strip edges.
-
-    Parameters
-    ----------
-    s : str
-        Input title
-
-    Returns
-    -------
-    str
-        Normalized representation
-    """
-
     t = s.lower()
     t = re.sub(r"[^a-z0-9]+", " ", t).strip()
     return re.sub(r"\s+", " ", t)
 
 
 def is_similar(a: str, b: str, *, threshold: float = 0.9) -> bool:
-    """Return True if two titles are similar at or above threshold.
-
-    Parameters
-    ----------
-    a, b : str
-        Titles to compare
-    threshold : float, optional
-        Similarity threshold in [0, 1] (default 0.9)
-    """
-
     return SequenceMatcher(None, normalize_title(a), normalize_title(b)).ratio() >= threshold
 
 
 def _compute_collisions(title: str, terms: List[str], *, threshold: float) -> List[Suggestion]:
-    """Compute near-collisions among terms for a given title.
-
-    A term collides if normalized forms are not exactly equal AND one of:
-    - compact(normalized(title)) is a substring of compact(normalized(term))
-    - compact(normalized(term)) is a substring of compact(normalized(title))
-    - normalized similarity >= threshold
-    """
-
     norm_in = normalize_title(title)
     compact_in = norm_in.replace(" ", "")
     out: List[Suggestion] = []
@@ -176,12 +79,6 @@ def check_title_appfollow(
     api_key: Optional[str] = None,
     timeout_s: float = 30.0,
 ) -> TitleCheckResult:
-    """Check title uniqueness using AppFollow ASO suggests.
-
-    Requires a valid API token in `api_key` or `APPFOLLOW_API_KEY` env var.
-    Raises TitleCheckError for missing credentials or HTTP errors.
-    """
-
     token = api_key or os.getenv("APPFOLLOW_API_KEY")
     if not token:
         raise TitleCheckError("APPFOLLOW_API_KEY not set")
@@ -228,12 +125,6 @@ def check_title_playstore(
     timeout_s: float = 30.0,
     user_agent: Optional[str] = None,
 ) -> TitleCheckResult:
-    """Check title visibility via Google Play web search (heuristic).
-
-    Fetches the search page with quoted title and extracts aria-label values as
-    potential visible titles. This is best-effort and may be brittle.
-    """
-
     q = up.quote(f'"{title}"')
     url = f"https://play.google.com/store/search?q={q}&c=apps&hl={hl}&gl={gl}"
     headers = {
@@ -283,26 +174,6 @@ def check_title(
     api_key: Optional[str] = None,
     timeout_s: float = 30.0,
 ) -> List[TitleCheckResult]:
-    """Run checks across providers and return a list of results.
-
-    Parameters
-    ----------
-    title : str
-        Title to evaluate
-    providers : list of Provider, optional
-        Providers to call; defaults to [appfollow, playstore]
-    country : str, optional
-        AppFollow country code (default 'us')
-    hl, gl : str, optional
-        Play locale and country (default 'en', 'US')
-    threshold : float, optional
-        Similarity threshold in [0, 1]
-    api_key : str, optional
-        AppFollow API key override
-    timeout_s : float, optional
-        HTTP timeout in seconds
-    """
-
     order = providers or [Provider.appfollow, Provider.playstore]
     out: List[TitleCheckResult] = []
     for p in order:

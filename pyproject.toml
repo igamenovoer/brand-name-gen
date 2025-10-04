@@ -65,6 +65,8 @@ docs-deploy = "mkdocs gh-deploy --force"
 quality = "pixi run lint && pixi run typecheck && pixi run test"
 check-android-appfollow = "brand-name-gen-cli check-android appfollow"
 check-android-playstore = "brand-name-gen-cli check-android playstore"
+check-search-engine-dataforseo = "brand-name-gen-cli check-search-engine dataforseo"
+sdk-dataforseo-example = "python -c 'from brand_name_gen.search.dataforseo.google_rank import DataForSEORanker; from brand_name_gen.search.dataforseo.types import GoogleRankQuery; print(DataForSEORanker.from_env().run(GoogleRankQuery(keyword=\"hb-app\")).top_position)'"
 
 [tool.pixi.environments]
 default = {features = [], solve-group = "default"}

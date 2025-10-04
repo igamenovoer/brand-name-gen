@@ -7,7 +7,7 @@ from click.testing import CliRunner
 
 from brand_name_gen.cli import cli
 import brand_name_gen.cli as cli_mod
-import brand_name_gen.domain_check as dc
+import brand_name_gen.domain.domain_check as dc
 
 
 class _Resp:

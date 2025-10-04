@@ -1,12 +1,7 @@
 """
 Stateful service for Android app title uniqueness checks.
 
-This service wraps the provider-specific functions in `title_check`
-and exposes a stateful API following the project's coding guide:
-
-- No-arg constructor; use factory methods to create instances
-- Member variables prefixed with `m_`
-- Pydantic models for results
+Moved from `brand_name_gen.title_checker` to `brand_name_gen.android.title_checker`.
 """
 
 from __future__ import annotations
@@ -23,20 +18,7 @@ from .title_check import (
 
 
 class AppTitleChecker:
-    """
-    Stateful Android title uniqueness checker.
-
-    Attributes
-    ----------
-    m_session : requests.Session or None
-        Optional shared HTTP session (reserved for future use)
-    m_timeout_s : float or None
-        Default timeout in seconds
-    m_user_agent : str or None
-        Default User-Agent for Play requests
-    m_api_key : str or None
-        AppFollow API token override
-    """
+    """Stateful Android title uniqueness checker."""
 
     def __init__(self) -> None:
         self.m_session: Optional[requests.Session] = None
@@ -46,8 +28,6 @@ class AppTitleChecker:
 
     @classmethod
     def from_defaults(cls) -> "AppTitleChecker":
-        """Create a checker with sensible defaults."""
-
         inst = cls()
         inst.m_session = requests.Session()
         inst.m_timeout_s = 30.0
@@ -61,8 +41,6 @@ class AppTitleChecker:
     def from_session(
         cls, session: requests.Session, *, timeout_s: float = 30.0, user_agent: Optional[str] = None
     ) -> "AppTitleChecker":
-        """Create a checker bound to an existing HTTP session."""
-
         inst = cls()
         inst.m_session = session
         inst.m_timeout_s = timeout_s
@@ -70,13 +48,9 @@ class AppTitleChecker:
         return inst
 
     def set_appfollow_api_key(self, api_key: str) -> None:
-        """Set AppFollow API key for subsequent calls."""
-
         self.m_api_key = api_key
 
     def check_appfollow(self, title: str, *, country: str = "us", threshold: float = 0.9) -> TitleCheckResult:
-        """Check title using AppFollow ASO suggests."""
-
         return check_title_appfollow(
             title,
             country=country,
@@ -88,8 +62,6 @@ class AppTitleChecker:
     def check_playstore(
         self, title: str, *, hl: str = "en", gl: str = "US", threshold: float = 0.9
     ) -> TitleCheckResult:
-        """Check title using Google Play web search (heuristic)."""
-
         return check_title_playstore(
             title,
             hl=hl,

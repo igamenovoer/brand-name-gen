@@ -17,7 +17,7 @@ Returns:
 
 ---
 
-## brand_name_gen.title_check
+## brand_name_gen.android.title_check
 
 ### Models
 - Suggestion
@@ -53,7 +53,7 @@ check_title(
 
 Example
 ```python
-from brand_name_gen.title_check import check_title_appfollow, check_title_playstore
+from brand_name_gen.android.title_check import check_title_appfollow, check_title_playstore
 
 af = check_title_appfollow("BrandName", country="us")
 ps = check_title_playstore("BrandName", hl="en", gl="US")
@@ -62,13 +62,13 @@ print(af.unique_enough, ps.unique_enough)
 
 ---
 
-## brand_name_gen.title_checker
+## brand_name_gen.android.title_checker
 
 ### AppTitleChecker
 Stateful service wrapper.
 
 ```
-from brand_name_gen.title_checker import AppTitleChecker
+from brand_name_gen.android.title_checker import AppTitleChecker
 
 checker = AppTitleChecker.from_defaults()
 checker.set_appfollow_api_key("<token>")
@@ -78,7 +78,7 @@ ps = checker.check_playstore("BrandName", hl="en", gl="US")
 
 ---
 
-## brand_name_gen.domain_check
+## brand_name_gen.domain.domain_check
 
 ### DomainAvailability (Pydantic model)
 Fields: `domain: str`, `available: bool | None`, `rdap_status: int | None`, `authoritative: bool`, `source: str`, `note: str | None`.
@@ -94,7 +94,7 @@ Batch helper to check multiple labels serially.
 
 Example
 ```python
-from brand_name_gen.domain_check import is_com_available
+from brand_name_gen.domain.domain_check import is_com_available
 
 res = is_com_available("brand-name")
 print(res.available)
@@ -102,7 +102,7 @@ print(res.available)
 
 ---
 
-## brand_name_gen.domain_checker
+## brand_name_gen.domain.domain_checker
 
 ### DomainChecker
 Stateful service with factory methods:
@@ -114,8 +114,54 @@ Method:
 
 Example
 ```python
-from brand_name_gen.domain_checker import DomainChecker
+from brand_name_gen.domain.domain_checker import DomainChecker
 
 checker = DomainChecker.from_defaults()
 result = checker.check_com("brand-name")
+```
+
+---
+
+## brand_name_gen.search.dataforseo
+
+### Types
+```
+from brand_name_gen.search.dataforseo.types import (
+  GoogleRankQuery, GoogleRankResult, OrganicItem,
+  DataForSEOError, CredentialsMissingError, UnauthorizedError, ForbiddenError, ApiResponseError,
+)
+```
+
+- GoogleRankQuery
+  - Fields: `keyword: str`, `se_domain: str = 'google.com'`, `location_code: int = 2840`, `language_code: str = 'en'`, `device: str = 'desktop'`, `os: str = 'macos'`, `depth: int = 50`, `similarity_threshold: float = 0.9`
+- GoogleRankResult
+  - Fields: `query: GoogleRankQuery`, `top_position: int | None`, `matches: list[OrganicItem]`, `total_matches: int`, `check_url: str | None`
+
+### Service
+```
+from brand_name_gen.search.dataforseo.google_rank import DataForSEORanker
+
+ranker = DataForSEORanker.from_env()  # .env takes precedence over os.environ
+res = ranker.run(GoogleRankQuery(keyword="hb-app"))
+print(res.top_position, [m.title for m in res.matches[:3]])
+```
+
+Errors
+- `CredentialsMissingError` when creds are not found
+- `UnauthorizedError` for 401
+- `ForbiddenError` for 403
+
+Notes
+- Credentials: `DATAFORSEO_LOGIN`, `DATAFORSEO_PASSWORD` (prefer `.env` in CWD)
+- Consumes DataForSEO credits
+
+---
+
+## brand_name_gen.utils.env
+
+```
+from brand_name_gen.utils.env import load_env_from_dotenv, read_dotenv_value
+
+load_env_from_dotenv()               # loads KEY=VALUE from .env into os.environ (no override)
+token = read_dotenv_value("MY_KEY")  # read .env value without mutating env
 ```
