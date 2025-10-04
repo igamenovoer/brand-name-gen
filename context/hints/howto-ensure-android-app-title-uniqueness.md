@@ -79,6 +79,18 @@ Notes
 - Rankings are locale/device‑specific and can fluctuate with algorithm updates; verify per `hl`/`gl` target.
 - Tools simulate store search; minor discrepancies vs. live Play UI can occur (A/B tests, personalization).
 
+Which tool to choose (free vs. popularity)
+- AppFollow — best free pick for quota: Free plan lets you track 2 apps and up to 1,000 keywords (all countries) with up to 5 seats. Ideal to validate Top‑1 on exact brand queries across locales without paying.
+  - Source: Pricing (Free plan details): https://appfollow.io/pricing
+- AppTweak — most popular/enterprise grade: leading ASO suite on review sites; excellent keyword intelligence; typically trial only, not free ongoing.
+  - Sources: G2 comparison: https://www.g2.com/compare/appfollow-vs-apptweak ; AppTweak tools: https://www.apptweak.com/en/aso-tools/app-store-keyword-ranking
+- App Radar — smaller free quota: commonly ~10 keywords on free; good for quick checks in a few locales, then upgrade if needed.
+  - Sources: Pricing/features: https://appradar.com/pricing ; Keyword rankings tool: https://appradar.com/aso-keyword-rankings-tool
+- MobileAction — very small free quota (often ~5 keywords): useful for a lightweight spot‑check.
+  - Source: Overview: https://www.mobileaction.co/aso-tools/
+
+Reminder: Free quotas and features change over time; confirm current limits on provider pages before relying on them in automation.
+
 4) Decision rules (suggested)
 - Unique if: no exact matches and no “very close” titles (normalized or similarity ≥ 0.9) in your category/locales.
 - If collisions exist: prefer a more distinctive core title; or add a short, policy‑compliant descriptor (e.g., “BrandName — Budget Planner”) while staying ≤ 30 chars.
