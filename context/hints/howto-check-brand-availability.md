@@ -53,6 +53,13 @@
   - Probe if a packageId exists: `https://play.google.com/store/apps/details?id=com.example.app&hl=en&gl=US` → HTTP 200 means exists; 404 likely not taken. Regional quirks and A/B pages can affect responses.
   - Search for title collisions: site search or Play search UI for your intended app title in your launch locales. Collisions won’t block submission but may impact discoverability and risk confusion.
 
+Searchability and non‑unique titles
+- Although Play allows non‑unique titles, treat uniqueness as a product requirement for brand discoverability.
+- Run Play store searches in your target locales for exact title and close variants (singular/plural, hyphen/no‑hyphen, spacing). Aim for zero or clearly weaker collisions in your category.
+- Prefer a distinctive core brand title. If needed, append a short, policy‑compliant descriptor to disambiguate (e.g., "BrandName — Budget Planner"). Keep within 30 chars and avoid promotional terms.
+- Use short description to clarify purpose and category so search ranking and user understanding improve without violating metadata rules.
+- Consider future localization: check transliterations and translations for conflicts in key markets.
+
 Python snippet (indicative only)
 ```
 import requests
