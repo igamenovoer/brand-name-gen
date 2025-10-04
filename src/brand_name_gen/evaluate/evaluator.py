@@ -11,6 +11,7 @@ from typing import Dict, List, Optional
 
 from .matcher import BuiltinMatcher, Matcher, RapidFuzzMatcher
 from .config import load_uniqueness_config
+from brand_name_gen.utils.env import load_env_from_dotenv
 from .providers import AppFollowProvider, DomainProvider, PlayProvider, SerpProvider
 from .scoring import score_appfollow, score_domain, score_google, score_play
 from .types import (
@@ -55,6 +56,8 @@ class UniquenessEvaluator:
     @classmethod
     def from_defaults(cls) -> "UniquenessEvaluator":
         inst = cls()
+        # Load environment from .env to mirror CLI behavior in API usage
+        load_env_from_dotenv()
         cfg = load_uniqueness_config()
         inst.m_config = cfg
         inst.m_matcher = _resolve_matcher(cfg.matcher_engine)
