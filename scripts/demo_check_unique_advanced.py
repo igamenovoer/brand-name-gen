@@ -5,6 +5,8 @@ import argparse
 import subprocess
 import sys
 from typing import List
+import json
+import re
 
 from rich.console import Console
 from rich.panel import Panel
@@ -35,14 +37,39 @@ def main(argv: List[str]) -> int:
     ]
 
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
-        for desc, cmd in steps:
+        final_score = None
+        final_grade = None
+        for i, (desc, cmd) in enumerate(steps):
             task = progress.add_task(desc, total=None)
-            rc = run(cmd)
+            if i == len(steps) - 1:
+                proc = subprocess.run(cmd, capture_output=True, text=True)
+                stdout = proc.stdout
+                if stdout:
+                    console.print(stdout.rstrip())
+                    if args.as_json:
+                        try:
+                            obj = json.loads(stdout)
+                            final_score = obj.get("overall_score")
+                            final_grade = obj.get("grade")
+                        except Exception:
+                            pass
+                    else:
+                        m_score = re.search(r"overall_score:\s*(\d+)", stdout)
+                        m_grade = re.search(r"grade:\s*(.+)", stdout)
+                        if m_score:
+                            final_score = m_score.group(1)
+                        if m_grade:
+                            final_grade = m_grade.group(1).strip()
+                rc = proc.returncode
+            else:
+                rc = run(cmd)
             progress.remove_task(task)
             if rc != 0:
-                console.print(f"[red]Step failed:[/red] {desc}")
-                return rc
-            console.print(f"[green]✓[/green] {desc}")
+                console.print(f"[yellow]⚠ Step failed:[/yellow] {desc} — continuing (neutral in aggregation)")
+            else:
+                console.print(f"[green]✓[/green] {desc}")
+    if final_score is not None and final_grade is not None:
+        print(f"Final score: {final_score} ({final_grade})")
     return 0
 
 

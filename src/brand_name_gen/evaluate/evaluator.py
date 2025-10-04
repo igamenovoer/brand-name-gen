@@ -78,24 +78,49 @@ class UniquenessEvaluator:
 
         per_locale: List[LocaleReport] = []
         for loc in locs:
-            dom = self._dom.check(title)
-            af = self._af.fetch(title, country=loc.country)
-            ps = self._ps.fetch(title, hl=loc.hl, gl=loc.gl)
-            serp = self._serp.fetch(title, location_code=loc.location_code, language_code=loc.language_code)
+            # Domain
+            sc_domain: ComponentScore
+            try:
+                dom = self._dom.check(title)
+                sc_domain = score_domain(dom, cfg)
+            except Exception as e:  # network/auth issues → neutral score
+                sc_domain = _neutral_component("domain", cfg, f"Domain check failed: {e}")
+                dom = None
 
-            af_titles = [(s.term, s.pos) for s in af.suggestions]
-            ps_titles = [(s.term, s.pos) for s in ps.suggestions]
-            serp_titles = [(m.title, m.rank_absolute) for m in serp.matches]
+            # AppFollow
+            af_titles = []
+            af_stats = matcher.stats(title, [])
+            try:
+                af = self._af.fetch(title, country=loc.country)
+                af_titles = [(s.term, s.pos) for s in af.suggestions]
+                af_stats = matcher.stats(title, [t for t, _ in af_titles])
+                sc_af = score_appfollow(af_stats, af_titles, title, matcher, cfg)
+            except Exception as e:
+                sc_af = _neutral_component("appfollow", cfg, f"AppFollow failed: {e}")
 
-            # Stats can be reused for features; per-component penalties use band_counts with positions
-            af_stats = matcher.stats(title, [t for t, _ in af_titles])
-            ps_stats = matcher.stats(title, [t for t, _ in ps_titles])
-            serp_stats = matcher.stats(title, [t for t, _ in serp_titles])
+            # Play
+            ps_titles = []
+            ps_stats = matcher.stats(title, [])
+            try:
+                ps = self._ps.fetch(title, hl=loc.hl, gl=loc.gl)
+                ps_titles = [(s.term, s.pos) for s in ps.suggestions]
+                ps_stats = matcher.stats(title, [t for t, _ in ps_titles])
+                sc_ps = score_play(ps_stats, ps_titles, title, matcher, cfg)
+            except Exception as e:
+                sc_ps = _neutral_component("play", cfg, f"Play search failed: {e}")
 
-            sc_domain = score_domain(dom, cfg)
-            sc_af = score_appfollow(af_stats, af_titles, title, matcher, cfg)
-            sc_ps = score_play(ps_stats, ps_titles, title, matcher, cfg)
-            sc_google = score_google(serp_stats, serp_titles, title, matcher, cfg)
+            # SERP
+            serp_titles = []
+            serp_stats = matcher.stats(title, [])
+            serp_check_url = None
+            try:
+                serp = self._serp.fetch(title, location_code=loc.location_code, language_code=loc.language_code)
+                serp_titles = [(m.title, m.rank_absolute) for m in serp.matches]
+                serp_stats = matcher.stats(title, [t for t, _ in serp_titles])
+                serp_check_url = getattr(serp, "check_url", None)
+                sc_google = score_google(serp_stats, serp_titles, title, matcher, cfg)
+            except Exception as e:
+                sc_google = _neutral_component("google", cfg, f"SERP fetch failed: {e}")
 
             per_locale.append(
                 LocaleReport(
@@ -110,7 +135,7 @@ class UniquenessEvaluator:
                         "af": af_stats.model_dump(),
                         "ps": ps_stats.model_dump(),
                         "serp": serp_stats.model_dump(),
-                        "serp_check_url": getattr(serp, "check_url", None),
+                        "serp_check_url": serp_check_url,
                     },
                 )
             )
@@ -164,4 +189,15 @@ def _build_explanations(reports: List[LocaleReport]) -> List[str]:
         check_url = rep.features.get("serp_check_url")
         if check_url:
             out.append(f"SERP verification URL ({rep.locale.language_code}-{rep.locale.location_code}): {check_url}")
+        # Collect component warnings
+        for name, cs in rep.components.items():
+            warn = cs.details.get("warning") if hasattr(cs, "details") else None
+            if isinstance(warn, str) and warn:
+                out.append(f"Warning [{name}]: {warn}")
     return out
+
+
+def _neutral_component(name: str, cfg: UniquenessConfig, message: str) -> ComponentScore:
+    weight = int(cfg.weights.get(name, 0))
+    neutral = max(0, int(round(weight / 2)))
+    return ComponentScore(name=name, score=neutral, details={"warning": message})

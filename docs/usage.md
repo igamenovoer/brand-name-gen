@@ -132,3 +132,19 @@ export BRAND_NAME_GEN_CONFIG=/path/to/brand-name-gen-config.yaml
 ```
 
 The CLI `evaluate uniqueness` command automatically loads this config. You can still override the matcher via `--matcher`.
+
+## Uniqueness Evaluation (CLI)
+Run the evaluator (aggregates Domain/AppFollow/Play/Google) with optional matcher override:
+```
+brand-name-gen-cli evaluate uniqueness "Your Brand" --matcher auto
+```
+
+If any provider call fails (network/auth), the evaluator prints a warning and assigns a neutral component score (50% of that component's weight) to keep the evaluation running.
+
+### Demo Tasks (with progress)
+We provide demo tasks that print step-by-step progress using Rich:
+```
+pixi run -e dev demo-check-unique-simple "Your Brand"   # builtin matcher
+pixi run -e dev demo-check-unique-advanced "Your Brand" # rapidfuzz matcher
+```
+Add `-- --json` to see JSON output from each step.

@@ -39,6 +39,18 @@ brand-name-gen-cli check-android playstore "Your Brand" --hl en --gl US --json
 # Search engine ranking (DataForSEO)
 # Requires DATAFORSEO_LOGIN and DATAFORSEO_PASSWORD (prefer .env in project root)
 brand-name-gen-cli check-search-engine dataforseo "Your Brand" --se-domain google.com --location-code 2840 --language-code en --device desktop --os macos --depth 50 --json
+
+# Uniqueness score (aggregates Domain/AppFollow/Play/Google)
+brand-name-gen-cli evaluate uniqueness "Your Brand" --matcher auto
+
+# Demos (with progress)
+# These print step-by-step progress using Rich and keep going even if a step fails.
+# Simple (builtin matcher)
+pixi run -e dev demo-check-unique-simple "Your Brand"
+# Advanced (RapidFuzz matcher)
+pixi run -e dev demo-check-unique-advanced "Your Brand"
+# Optional: show JSON output from each step
+pixi run -e dev demo-check-unique-advanced "Your Brand" -- --json
 ```
 
 Python API:
@@ -77,6 +89,10 @@ DATAFORSEO_LOGIN=your_login
 DATAFORSEO_PASSWORD=your_password
 ```
 The CLI prefers values from `.env` and falls back to `os.environ`.
+
+YAML configuration (optional): place `brand-name-gen-config.yaml` in your project root (or set `BRAND_NAME_GEN_CONFIG=/path/to/file`) to control matcher engine, component weights, and grade thresholds. See `examples/brand-name-gen-config.yaml` for a commented template. The evaluator loads YAML automatically.
+
+Provider failures: if any provider call fails (network/auth), the evaluator assigns a neutral component score (50% of that component's weight) and includes a warning in the report, rather than aborting.
 
 Python SDK (DataForSEO):
 ```python

@@ -122,6 +122,32 @@ result = checker.check_com("brand-name")
 
 ---
 
+## brand_name_gen.evaluate
+
+### Types
+```
+from brand_name_gen.evaluate.types import (
+  LocaleSpec, UniquenessConfig, MatchStats,
+  ComponentScore, LocaleReport, UniquenessReport,
+)
+```
+
+### Evaluator
+```
+from brand_name_gen.evaluate.evaluator import UniquenessEvaluator
+from brand_name_gen.evaluate.types import LocaleSpec
+
+ev = UniquenessEvaluator.from_defaults()  # loads YAML config if present
+report = ev.evaluate("Your Brand", [LocaleSpec()])
+print(report.overall_score, report.grade)
+```
+
+Notes
+- Config precedence: brand-name-gen-config.yaml in CWD > env `BRAND_NAME_GEN_CONFIG` > defaults.
+- If a provider fails (network/auth), the evaluator assigns a neutral component score and appends a warning to `report.explanations` instead of failing.
+
+---
+
 ## brand_name_gen.search.dataforseo
 
 ### Types
