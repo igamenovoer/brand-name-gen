@@ -99,3 +99,36 @@ print(af.unique_enough, [c.term for c in af.collisions])
 ps = check_title_playstore("Your Brand", hl="en", gl="US")
 print(ps.unique_enough, [c.term for c in ps.collisions])
 ```
+
+## Configuration (YAML)
+- The evaluator supports YAML configuration (processed with ruamel.yaml) to control matcher engine, component weights, and grade thresholds.
+- Precedence:
+  1) `brand-name-gen-config.yaml` in the current working directory
+  2) `BRAND_NAME_GEN_CONFIG` environment variable (path to YAML)
+  3) Built-in defaults (see `src/brand_name_gen/evaluate/defaults.py`)
+
+Example YAML (`examples/brand-name-gen-config.yaml`):
+```
+# Which matcher to use: auto | rapidfuzz | builtin
+matcher_engine: auto
+
+# Component weights (should sum roughly to ~100)
+weights:
+  domain: 25
+  appfollow: 25
+  play: 20
+  google: 30
+
+# Grade thresholds for the final score
+thresholds:
+  distinct: 80
+  likely: 60
+  border: 40
+```
+
+To point to a custom path:
+```
+export BRAND_NAME_GEN_CONFIG=/path/to/brand-name-gen-config.yaml
+```
+
+The CLI `evaluate uniqueness` command automatically loads this config. You can still override the matcher via `--matcher`.

@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Dict, List, Optional
 
 from .matcher import BuiltinMatcher, Matcher, RapidFuzzMatcher
+from .config import load_uniqueness_config
 from .providers import AppFollowProvider, DomainProvider, PlayProvider, SerpProvider
 from .scoring import score_appfollow, score_domain, score_google, score_play
 from .types import (
@@ -54,7 +55,7 @@ class UniquenessEvaluator:
     @classmethod
     def from_defaults(cls) -> "UniquenessEvaluator":
         inst = cls()
-        cfg = UniquenessConfig()
+        cfg = load_uniqueness_config()
         inst.m_config = cfg
         inst.m_matcher = _resolve_matcher(cfg.matcher_engine)
         return inst
@@ -164,4 +165,3 @@ def _build_explanations(reports: List[LocaleReport]) -> List[str]:
         if check_url:
             out.append(f"SERP verification URL ({rep.locale.language_code}-{rep.locale.location_code}): {check_url}")
     return out
-

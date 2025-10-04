@@ -24,6 +24,7 @@ from .search.dataforseo.google_rank import DataForSEORanker
 from .search.dataforseo.types import GoogleRankQuery
 from .utils.env import load_env_from_dotenv
 from .evaluate.types import UniquenessConfig, LocaleSpec
+from .evaluate.config import load_uniqueness_config
 from .evaluate.evaluator import UniquenessEvaluator
 
 
@@ -361,9 +362,11 @@ def evaluate_uniqueness_cmd(
     matcher: str,
     as_json: bool,
 ) -> None:
-    cfg = UniquenessConfig(matcher_engine=matcher)
-    evaluator = UniquenessEvaluator.from_defaults()
+    # Load config from YAML with overrides (matcher engine from CLI)
+    cfg = load_uniqueness_config(overrides={"matcher_engine": matcher})
+    evaluator = UniquenessEvaluator.from_defaults()  # will resolve matcher based on YAML/defaults
     evaluator.set_config(cfg)
+    evaluator.set_matcher(_resolve_cli_matcher(cfg.matcher_engine))
     loc = LocaleSpec(country=country, hl=hl, gl=gl, location_code=location_code, language_code=language_code)
     try:
         report = evaluator.evaluate(title, [loc])
@@ -382,3 +385,20 @@ def evaluate_uniqueness_cmd(
         click.echo("explanations:")
         for line in report.explanations:
             click.echo(f"  - {line}")
+
+
+def _resolve_cli_matcher(engine: str):
+    # local resolver to avoid importing evaluator internals here
+    try:
+        from .evaluate.matcher import RapidFuzzMatcher, BuiltinMatcher
+        if engine == "rapidfuzz":
+            return RapidFuzzMatcher()
+        if engine == "builtin":
+            return BuiltinMatcher()
+        try:
+            return RapidFuzzMatcher()
+        except Exception:
+            return BuiltinMatcher()
+    except Exception:  # pragma: no cover - fallback safety
+        from .evaluate.matcher import BuiltinMatcher as _BM
+        return _BM()

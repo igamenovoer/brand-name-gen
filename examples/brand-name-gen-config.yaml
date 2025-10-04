@@ -1,0 +1,33 @@
+# Brand Name Gen — Uniqueness Evaluation Config
+#
+# This YAML config customizes the evaluator's behavior. Precedence:
+# 1) brand-name-gen-config.yaml in the current working directory (highest)
+# 2) BRAND_NAME_GEN_CONFIG environment variable pointing to a YAML file
+# 3) Built-in defaults (see src/brand_name_gen/evaluate/defaults.py)
+#
+# matcher_engine: Which matcher to use for string similarity
+#   - auto      : prefer RapidFuzz if available, otherwise fallback to builtin
+#   - rapidfuzz : require RapidFuzz (fast, robust). Install: pip install rapidfuzz
+#   - builtin   : no extra deps; uses SequenceMatcher + heuristics
+matcher_engine: auto
+
+# weights: Component weights (should sum roughly to ~100). Components:
+#  - domain  : .com availability via RDAP
+#  - appfollow: AppFollow ASO suggests (keyword intent)
+#  - play    : Google Play (heuristic labels)
+#  - google  : Google SERP via DataForSEO
+weights:
+  domain: 25
+  appfollow: 25
+  play: 20
+  google: 30
+
+# thresholds: Grade bins for the final 0–100 score
+#  - distinct: score >= this → Distinct
+#  - likely  : score >= this → Likely Unique (else next bin)
+#  - border  : score >= this → Borderline (else Colliding)
+thresholds:
+  distinct: 80
+  likely: 60
+  border: 40
+
